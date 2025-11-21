@@ -14,7 +14,9 @@ gem 'simple_form'
 gem 'slim-rails'
 gem 'turbolinks', '~> 5'
 gem 'webpacker', '~> 5.0'
-gem "mail", "~> 2.7"
+gem 'mail', '~> 2.7'
+gem 'net-smtp', require: 'net/smtp'  
+
 gem "openssl"
 
 
