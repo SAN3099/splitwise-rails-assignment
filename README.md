@@ -30,6 +30,7 @@
 - Deploy your app to Heroku or any other platform.
 - Send us the link of the dpeloyed application and your PR.
 
+- Submission branch: splitwise-assignment
 
 ## Contact us
 If you need any help regarding this assignment or want to join [Commutatus](https://www.commutatus.com/), drop us an email at work@commutatus.com
