@@ -1,0 +1,33 @@
+= form_with url: payments_path, method: :post, local: true do |f|
+  .mb-3
+    = f.label :to_user_id, "Select Friend"
+    = f.collection_select :to_user_id, @users, :id, :name,
+        { prompt: "Select Friend" },
+        { id: "settle_friend_select", class: "form-control", data: { amounts: @users.map { |u| [u.id, u.balance_with(current_user)] }.to_h } }
+
+  .mb-3
+    = f.label :amount, "Amount to Settle"
+    = f.number_field :amount, step: "0.01", min: 0, class: "form-control", id: "settle_amount"
+
+  .mb-3
+    = f.label :note, "Note (Optional)"
+    = f.text_area :note, rows: 2, class: "form-control"
+
+  .mt-3
+    = f.submit "Settle Up", class: "btn btn-primary"
+
+script
+  | document.addEventListener('DOMContentLoaded', function() {
+  |   const friendSelect = document.getElementById('settle_friend_select');
+  |   const amountField = document.getElementById('settle_amount');
+  |   const amountsData = friendSelect.dataset.amounts ? JSON.parse(friendSelect.dataset.amounts) : {};
+  |
+  |   friendSelect.addEventListener('change', function() {
+  |     const selectedId = friendSelect.value;
+  |     if (selectedId && amountsData[selectedId]) {
+  |       amountField.value = amountsData[selectedId];
+  |     } else {
+  |       amountField.value = "";
+  |     }
+  |   });
+  | });

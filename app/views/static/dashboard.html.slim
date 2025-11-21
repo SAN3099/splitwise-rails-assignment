@@ -1,0 +1,79 @@
+.dashboard-wrapper
+  aside.side-bar-area
+    .friends-list
+      p.friends-list-header FRIENDS
+      - @users.each do |u|
+        = link_to person_path(u), class: "friend-name" do
+          = u.name
+
+  .main-area
+    .top-bar
+      h1.top-bar-title Dashboard
+      .top-bar-actions
+        button.btn.btn-primary type="button" data-bs-toggle="modal" data-bs-target="#expenseModal" Add an expense
+        button.btn.btn-secondary type="button" data-bs-toggle="modal" data-bs-target="#settleModal" Settle up
+
+    .dashboard-balances
+      .balances-bar
+        .balance-block
+          p Total balance
+          p = number_to_currency(@total_balance)
+
+        .balance-block
+          p You owe
+          p = number_to_currency(@you_owe)
+
+        .balance-block
+          p You are owed
+          p = number_to_currency(@you_are_owed)
+
+      .dashboard-detail
+        .detail-block
+          h2.detail-title You owe
+          - if @owe_list.any?
+            - @owe_list.each do |entry|
+              - friend = entry[:user]
+              - amt = entry[:amount]
+              .user-detail
+                img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
+                .user-info
+                  p = friend.name
+                  p = "You owe #{number_to_currency(amt)}"
+          - else
+            p No pending dues
+
+        .detail-block
+          h2.detail-title You are owed
+          - if @owed_list.any?
+            - @owed_list.each do |entry|
+              - friend = entry[:user]
+              - amt = entry[:amount]
+              .user-detail
+                img.user-img alt="profile" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" /
+                .user-info
+                  p = friend.name
+                  p = "owes you #{number_to_currency(amt)}"
+          - else
+            p No one owes you
+
+/ Expense modal
+#expenseModal.modal.fade aria-hidden="true" aria-labelledby="expenseModalLabel" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h5#expenseModalLabel.modal-title Add an expense
+        button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button"
+      .modal-body
+        = render 'static/expense_form'
+      .modal-footer
+        button.btn.btn-secondary data-bs-dismiss="modal" type="button" Close
+
+/ Settle modal
+#settleModal.modal.fade aria-hidden="true" aria-labelledby="settleModalLabel" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h5#settleModalLabel.modal-title Settle Up
+        button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button"
+      .modal-body
+          = render 'static/expense_settle_form'

@@ -1,0 +1,17 @@
+user_one:
+  name: Jefferey Crooks DVM
+  email: elvera@mitchell-gottlieb.com
+  mobile_number: "9981035632"
+  encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+
+user_two:
+  name: Kelley Kris
+  email: raymond_pagac@daugherty.net
+  mobile_number: "8358850499"
+  encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+
+user_three:
+  name: Sen. Marisa Baumbach
+  email: michel@mosciski-quigley.co
+  mobile_number: "1492405168"
+  encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>

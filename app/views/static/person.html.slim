@@ -1,0 +1,80 @@
+.dashboard-wrapper
+  aside.side-bar-area
+    .friends-list
+      p.friends-list-header FRIENDS
+      - @users.each do |user|
+        = link_to person_path(user), class: "friend-name" do
+          = user.name
+
+  .main-area
+    .top-bar
+      h1.top-bar-title= @friend.name
+      .top-bar-actions
+        button.btn.btn-primary type="button" data-bs-toggle="modal" data-bs-target="#expenseModal" Add an expense
+        button.btn.btn-secondary type="button" data-bs-toggle="modal" data-bs-target="#settleModal" Settle up
+
+    .friend-balance.mt-3.mb-3
+      - if @balance.present?
+        - bal = @balance.to_f
+        - if bal > 0
+          p
+            strong = "#{@friend.name} owes you "
+            | #{number_to_currency(bal)}
+        - elsif bal < 0
+          p
+            strong = "You owe #{@friend.name} "
+            | #{number_to_currency(bal.abs)}
+        - else
+          p You are all settled up!
+      - else
+        p You are all settled up!
+
+    .expenses-list.mt-4
+      - if @expenses.any?
+        - @expenses.each do |expense|
+          .expense-item.mb-3.p-3.border.rounded
+            .item-lhs
+              p.mb-0.small.text-muted= expense.created_at.strftime("%b %d, %Y")
+              p.lead.mb-1= expense.description || "Expense"
+              p.mb-0
+                small = "Paid by: "
+                = expense.created_by&.name || "Unknown"
+            .item-rhs.mt-2
+              - expense.expense_items.each do |item|
+                .you-details.mb-2
+                  p.mb-0 = item.name
+                  p.mb-0.text-primary = number_to_currency(item.amount)
+                  p.mb-0
+                    small = "Split Type: "
+                    = item.split_type.titleize
+      - else
+        p No expenses yet.
+
+#expenseModal.modal.fade aria-hidden="true" aria-labelledby="expenseModalLabel" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h5#expenseModalLabel.modal-title Add an expense
+        button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button"
+      .modal-body
+        = render 'static/expense_form', friend: @friend
+      .modal-footer
+        button.btn.btn-secondary data-bs-dismiss="modal" type="button" Close
+
+#settleModal.modal.fade aria-hidden="true" aria-labelledby="settleModalLabel" tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h5#settleModalLabel.modal-title Settle up with #{@friend.name}
+        button.btn-close aria-label="Close" data-bs-dismiss="modal" type="button"
+      .modal-body
+        = form_with url: payments_path, method: :post, local: true do |f|
+          = f.hidden_field :to_user_id, value: @friend.id
+          .mb-3
+            = f.label :amount, "Amount Paid"
+            = f.number_field :amount, step: 0.01, class: "form-control", required: true, value: @balance.abs
+          .mb-3
+            = f.label :note, "Notes (Optional)"
+            = f.text_area :note, rows: 2, class: "form-control"
+          .mt-3
+            = f.submit "Settle Up", class: "btn btn-primary"

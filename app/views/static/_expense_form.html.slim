@@ -1,0 +1,79 @@
+= form_with model: Expense.new, url: expenses_path, local: true do |f|
+  .mb-3
+    = f.label :description
+    = f.text_field :description, class: "form-control", required: true
+
+  .mb-3
+    = f.label :tax_amount
+    = f.number_field :tax_amount, step: "0.01", class: "form-control"
+
+  h4 Participants
+  - User.all.each do |u|
+    .form-check
+      = check_box_tag "expense[participant_ids][]", u.id, false,
+          class: "form-check-input",
+          id: "user_#{u.id}"
+      = label_tag "user_#{u.id}", u.name, class: "form-check-label"
+
+  h4 Items
+  #expense-items
+    / === initial item (id 0) ===
+    .expense-item-fields.mb-3.p-3.border.rounded data-item-id="0"
+      = text_field_tag "expense[items][0][name]", nil,
+          placeholder: "Item name",
+          class: "form-control mb-2 item-name",
+          required: true
+
+      = number_field_tag "expense[items][0][amount]", nil,
+          step: "0.01",
+          class: "form-control mb-2 item-amount",
+          required: true
+
+      = select_tag "expense[items][0][split_type]",
+          options_for_select([["Equal", "equal"], ["Unequal", "unequal"]]),
+          class: "form-control mb-2 split-type-select",
+          data: { item_id: 0 }
+
+      .unequal-inputs#unequal-inputs-0 style="display:none;"
+        - User.all.each do |u|
+          .input-group.mb-2
+            span.input-group-text = u.name
+            = number_field_tag "expense[items][0][unequal_splits][#{u.id}]",
+                nil,
+                step: "0.01",
+                class: "form-control unequal-amount"
+
+      button.btn.btn-danger.remove-item.mt-2 type="button" Remove Item
+
+  / === template used for cloning ===
+  template#expense-item-template
+    .expense-item-fields.mb-3.p-3.border.rounded data-item-id="NEW_RECORD"
+      = text_field_tag "expense[items][NEW_RECORD][name]", nil,
+          placeholder: "Item name",
+          class: "form-control mb-2 item-name",
+          required: true
+
+      = number_field_tag "expense[items][NEW_RECORD][amount]", nil,
+          step: "0.01",
+          class: "form-control mb-2 item-amount",
+          required: true
+
+      = select_tag "expense[items][NEW_RECORD][split_type]",
+          options_for_select([["Equal", "equal"], ["Unequal", "unequal"]]),
+          class: "form-control mb-2 split-type-select",
+          data: { item_id: "NEW_RECORD" }
+
+      .unequal-inputs#unequal-inputs-NEW_RECORD style="display:none;"
+        - User.all.each do |u|
+          .input-group.mb-2
+            span.input-group-text = u.name
+            = number_field_tag "expense[items][NEW_RECORD][unequal_splits][#{u.id}]",
+                nil,
+                step: "0.01",
+                class: "form-control unequal-amount"
+
+      button.btn.btn-danger.remove-item.mt-2 type="button" Remove Item
+
+  .mt-3
+    = button_tag "Add Item", type: "button", id: "add-item-button", class: "btn btn-secondary mb-3"
+    = f.submit "Add Expense", class: "btn btn-primary"
