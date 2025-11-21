@@ -1,0 +1,27 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  
+
+development:
+  <<: *default
+  database: splitwise_development
+  username: postgres
+  password: 4545
+  host: localhost
+  port: 5433
+
+test:
+  <<: *default
+  database: splitwise_test
+  username: postgres
+  password: 4545
+  host: localhost
+  port: 5433
+
+production:
+  <<: *default
+  database: splitwise_production
+  url: <%= ENV['DATABASE_URL'] %>
+
