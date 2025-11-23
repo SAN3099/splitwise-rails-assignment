@@ -16,6 +16,11 @@ gem 'turbolinks', '~> 5'
 gem 'webpacker', '~> 5.0'
 gem 'mail', '~> 2.7'
 gem 'openssl'
+gem 'rails_12factor', group: :production
+gem 'nokogiri', '1.16.8'
+gem 'net-smtp'
+gem 'net-imap'
+gem 'net-pop'
 
 
 group :development, :test do
