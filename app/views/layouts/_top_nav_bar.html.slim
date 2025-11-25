@@ -12,6 +12,9 @@ header
                 | Account
               ul.dropdown-menu.dropdown-menu-dark aria-labelledby="navbarDarkDropdownMenuLink" 
                 li
-                  = link_to destroy_user_session_path, method: :delete, class: 'dropdown-item'
-                    .icon-logout.font-size-20.mr-4
-                    | Logout
+                = button_to destroy_user_session_path, method: :delete, class: 'dropdown-item text-start p-2',
+                  form_class: 'm-0 p-0' do
+                    .d-flex.align-items-center
+                      .icon-logout.font-size-20.mr-4
+                      | Logout
+
